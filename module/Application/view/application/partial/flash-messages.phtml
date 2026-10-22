@@ -1,0 +1,33 @@
+<?php
+$flash = $this->flashMessenger();
+
+// Hiển thị thông báo thành công (Success)
+$successMessages = array_merge(
+    $flash->getSuccessMessages(),
+    $flash->getCurrentSuccessMessages()
+);
+if ($successMessages) {
+    foreach ($successMessages as $message) {
+        echo '<div class="alert alert-success alert-dismissible fade show shadow-sm rounded-4 d-flex align-items-center mb-4" role="alert">';
+        echo '<i class="fas fa-check-circle me-3 fs-4 text-success"></i>';
+        echo '<div class="fw-semibold">' . $this->escapeHtml($message) . '</div>';
+        echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+        echo '</div>';
+    }
+}
+
+// Hiển thị thông báo lỗi (Error)
+$errorMessages = array_merge(
+    $flash->getErrorMessages(),
+    $flash->getCurrentErrorMessages()
+);
+if ($errorMessages) {
+    foreach ($errorMessages as $message) {
+        echo '<div class="alert alert-danger alert-dismissible fade show shadow-sm rounded-4 d-flex align-items-center mb-4" role="alert">';
+        echo '<i class="fas fa-exclamation-triangle me-3 fs-4 text-danger"></i>';
+        echo '<div class="fw-semibold">' . $this->escapeHtml($message) . '</div>';
+        echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+        echo '</div>';
+    }
+}
+?>
