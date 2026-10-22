@@ -12,6 +12,15 @@
  * file.
  */
 
+$dsn      = getenv('DB_DSN');
+$username = getenv('DB_USERNAME');
+$password = getenv('DB_PASSWORD');
+
 return [
-    // ...
+    'db' => [
+        'driver'   => 'Pdo_Mysql',
+        'dsn'      => $dsn === false ? 'mysql:dbname=ban_sach_online;host=127.0.0.1;charset=utf8mb4' : $dsn,
+        'username' => $username === false ? 'root' : $username,
+        'password' => $password === false ? '' : $password,
+    ],
 ];

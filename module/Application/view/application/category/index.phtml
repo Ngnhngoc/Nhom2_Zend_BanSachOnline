@@ -1,7 +1,8 @@
+<?= $this->partial('application/partial/flash-messages') ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold text-dark"><i class="fas fa-list me-2"></i> Quản Lý Loại Sách</h2>
-    <a href="/category/add" class="btn btn-primary shadow-sm">
+    <a href="<?= $this->url('category', ['action' => 'add']) ?>" class="btn btn-primary shadow-sm">
         <i class="fas fa-plus-circle me-1"></i> Thêm Loại Sách Mới
     </a>
 </div>
@@ -12,51 +13,47 @@
             <table class="table table-hover align-middle">
                 <thead class="table-dark">
                     <tr>
-                        <th width="10%">STT</th>
-                        <th width="25%">Mã Loại</th>
-                        <th width="40%">Tên Loại Sách</th>
-                        <th width="25%" class="text-center">Thao Tác</th>
+                        <th width="8%">STT</th>
+                        <th width="20%">Mã Loại</th>
+                        <th width="37%">Tên Loại Sách</th>
+                        <th width="15%">Trạng Thái</th>
+                        <th width="20%" class="text-center">Thao Tác</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>L01</td>
-                        <td class="fw-semibold">Công nghệ thông tin</td>
-                        <td class="text-center">
-                            <a href="/category/edit/1" class="btn btn-warning btn-sm text-white me-1" title="Sửa">
-                                <i class="fas fa-edit"></i> Sửa
-                            </a>
-                            <a href="/category/delete/1" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">
-                                <i class="fas fa-trash-alt"></i> Xóa
-                            </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>L02</td>
-                        <td class="fw-semibold">Văn học nghệ thuật</td>
-                        <td class="text-center">
-                            <a href="/category/edit/2" class="btn btn-warning btn-sm text-white me-1" title="Sửa">
-                                <i class="fas fa-edit"></i> Sửa
-                            </a>
-                            <a href="/category/delete/2" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">
-                                <i class="fas fa-trash-alt"></i> Xóa
-                            </a>
-                        </td>
-                    </tr>
+                    <?php if ($categories === []): ?>
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                Chưa có loại sách nào.
+                            </td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($categories as $index => $category): ?>
+                            <tr>
+                                <td><?= $index + 1 ?></td>
+                                <td><?= $this->escapeHtml($category['category_code']) ?></td>
+                                <td class="fw-semibold"><?= $this->escapeHtml($category['category_name']) ?></td>
+                                <td>
+                                    <?php if ($category['status'] === 1): ?>
+                                        <span class="badge text-bg-success">Hiển thị</span>
+                                    <?php else: ?>
+                                        <span class="badge text-bg-secondary">Ẩn</span>
+                                    <?php endif ?>
+                                </td>
+                                <td class="text-center">
+                                    <a
+                                        href="<?= $this->url('category', ['action' => 'edit', 'id' => $category['id']]) ?>"
+                                        class="btn btn-warning btn-sm text-white me-1"
+                                        title="Sửa"
+                                    >
+                                        <i class="fas fa-edit"></i> Sửa
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach ?>
+                    <?php endif ?>
                 </tbody>
             </table>
         </div>
-
-        <!-- Phân trang chuẩn Bootstrap -->
-        <nav class="mt-4">
-            <ul class="pagination justify-content-center">
-                <li class="page-item disabled"><a class="page-link" href="#">Trước</a></li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">Sau</a></li>
-            </ul>
-        </nav>
     </div>
 </div>

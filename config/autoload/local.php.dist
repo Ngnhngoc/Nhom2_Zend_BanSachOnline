@@ -13,4 +13,6 @@
  */
 
 return [
+    // Có thể khai báo các biến môi trường DB_DSN, DB_USERNAME và DB_PASSWORD
+    // thay vì lưu thông tin kết nối cơ sở dữ liệu trực tiếp trong mã nguồn.
 ];

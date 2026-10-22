@@ -2,24 +2,69 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-dark"><i class="fas fa-edit me-2 text-warning"></i> Cập Nhật Loại Sách</h2>
-            <p class="text-muted mb-0">Chỉnh sửa thông tin loại sách (Đang sửa ID: <?= $this->id ?>)</p>
+            <p class="text-muted mb-0">Chỉnh sửa thông tin loại sách (ID: <?= $this->escapeHtml((string) $id) ?>)</p>
         </div>
-        <a href="/category" class="btn btn-secondary shadow-sm">
+        <a href="<?= $this->url('category') ?>" class="btn btn-secondary shadow-sm">
             <i class="fas fa-arrow-left me-1"></i> Quay Lại
         </a>
     </div>
 
     <div class="card border-0 shadow-sm rounded-4 col-md-8">
         <div class="card-body p-4">
-            <form action="" method="POST">
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Mã Loại</label>
-                    <input type="text" name="category_code" class="form-control" value="L0<?= $this->id ?>" required>
+            <?php if (isset($errors['form'])): ?>
+                <div class="alert alert-danger" role="alert">
+                    <?= $this->escapeHtml($errors['form']) ?>
                 </div>
+            <?php endif ?>
+
+            <form action="<?= $this->url('category', ['action' => 'edit', 'id' => $id]) ?>" method="post" novalidate>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Tên Loại Sách</label>
-                    <input type="text" name="category_name" class="form-control" value="Công nghệ thông tin" required>
+                    <label for="category-code" class="form-label fw-semibold">Mã Loại</label>
+                    <input
+                        id="category-code"
+                        type="text"
+                        name="category_code"
+                        maxlength="20"
+                        class="form-control<?= isset($errors['category_code']) ? ' is-invalid' : '' ?>"
+                        value="<?= $this->escapeHtmlAttr($formData['category_code']) ?>"
+                        required
+                    >
+                    <?php if (isset($errors['category_code'])): ?>
+                        <div class="invalid-feedback"><?= $this->escapeHtml($errors['category_code']) ?></div>
+                    <?php endif ?>
                 </div>
+
+                <div class="mb-3">
+                    <label for="category-name" class="form-label fw-semibold">Tên Loại Sách</label>
+                    <input
+                        id="category-name"
+                        type="text"
+                        name="category_name"
+                        maxlength="150"
+                        class="form-control<?= isset($errors['category_name']) ? ' is-invalid' : '' ?>"
+                        value="<?= $this->escapeHtmlAttr($formData['category_name']) ?>"
+                        required
+                    >
+                    <?php if (isset($errors['category_name'])): ?>
+                        <div class="invalid-feedback"><?= $this->escapeHtml($errors['category_name']) ?></div>
+                    <?php endif ?>
+                </div>
+
+                <div class="mb-4">
+                    <label for="category-status" class="form-label fw-semibold">Trạng thái hiển thị</label>
+                    <select
+                        id="category-status"
+                        name="status"
+                        class="form-select<?= isset($errors['status']) ? ' is-invalid' : '' ?>"
+                    >
+                        <option value="1"<?= $formData['status'] === 1 ? ' selected' : '' ?>>Hiển thị</option>
+                        <option value="0"<?= $formData['status'] === 0 ? ' selected' : '' ?>>Ẩn</option>
+                    </select>
+                    <?php if (isset($errors['status'])): ?>
+                        <div class="invalid-feedback"><?= $this->escapeHtml($errors['status']) ?></div>
+                    <?php endif ?>
+                </div>
+
                 <button type="submit" class="btn btn-warning text-white fw-bold px-4 py-2">
                     <i class="fas fa-save me-1"></i> Lưu Thay Đổi
                 </button>

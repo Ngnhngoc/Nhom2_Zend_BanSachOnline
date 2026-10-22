@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Application;
 
+use Application\Model\CategoryRepositoryInterface;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
@@ -62,8 +63,13 @@ return [
     'controllers' => [
         'factories' => [
             Controller\IndexController::class    => InvokableFactory::class,
-            Controller\CategoryController::class => InvokableFactory::class,
+            Controller\CategoryController::class => Factory\CategoryControllerFactory::class,
             Controller\AuthController::class     => InvokableFactory::class,
+        ],
+    ],
+    'service_manager' => [
+        'factories' => [
+            CategoryRepositoryInterface::class => Factory\CategoryTableFactory::class,
         ],
     ],
     'view_manager' => [
