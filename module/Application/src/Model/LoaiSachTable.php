@@ -25,6 +25,43 @@ class LoaiSachTable
     }
 
     /**
+     * Tìm kiếm loại sách theo từ khóa (tên loại, mã loại, mô tả) và trạng thái.
+     */
+    public function search(?string $keyword = null, ?int $trangThai = null): array
+    {
+        $keyword = trim((string) $keyword);
+
+        return $this->tableGateway->select(function ($select) use ($keyword, $trangThai) {
+            $predicate = $select->where;
+
+            if ($keyword !== '') {
+                $cleanId = preg_replace('/^[Ll]0*/', '', $keyword);
+                if (is_numeric($cleanId) && (int) $cleanId > 0) {
+                    $predicate->nest()
+                        ->equalTo('id', (int) $cleanId)
+                        ->or
+                        ->like('ten_loai', '%' . $keyword . '%')
+                        ->or
+                        ->like('mo_ta', '%' . $keyword . '%')
+                    ->unnest();
+                } else {
+                    $predicate->nest()
+                        ->like('ten_loai', '%' . $keyword . '%')
+                        ->or
+                        ->like('mo_ta', '%' . $keyword . '%')
+                    ->unnest();
+                }
+            }
+
+            if ($trangThai !== null && $trangThai !== -1) {
+                $predicate->equalTo('trang_thai', $trangThai);
+            }
+
+            $select->order('id ASC');
+        })->toArray();
+    }
+
+    /**
      * Lấy loại sách theo ID.
      */
     public function getById(int $id): ?array

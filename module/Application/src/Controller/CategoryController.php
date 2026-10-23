@@ -17,25 +17,29 @@ class CategoryController extends AbstractActionController
         $this->loaiSachTable = $loaiSachTable;
     }
 
+    /**
+     * Danh sách loại sách và tìm kiếm
+     */
     public function indexAction()
     {
+        $keyword = $this->params()->fromQuery('keyword', null);
+        $trangThaiParam = $this->params()->fromQuery('trang_thai', '');
+
+        $trangThai = ($trangThaiParam !== '' && $trangThaiParam !== null)
+            ? (int) $trangThaiParam
+            : null;
+
+        // Xử lý tìm kiếm nếu có từ khóa hoặc trạng thái
+        if ($keyword !== null || $trangThai !== null) {
+            $loaiSachs = $this->loaiSachTable->search($keyword, $trangThai);
+        } else {
+            $loaiSachs = $this->loaiSachTable->getAll();
+        }
+
         return new ViewModel([
-            'loaiSachs' => $this->loaiSachTable->getAll(),
-        ]);
-    }
-
-    public function addAction()
-    {
-        return new ViewModel();
-    }
-
-    public function editAction()
-    {
-        $id = (int) $this->params()->fromRoute('id', 0);
-
-        return new ViewModel([
-            'id' => $id,
-            'loaiSach' => $this->loaiSachTable->getById($id),
+            'loaiSachs'  => $loaiSachs,
+            'keyword'    => $keyword ?? '',
+            'trangThai'  => $trangThaiParam,
         ]);
     }
 }

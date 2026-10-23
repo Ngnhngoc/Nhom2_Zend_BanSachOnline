@@ -35,7 +35,7 @@ CREATE TABLE DauSach (
     nha_xuat_ban VARCHAR(150) NULL,
     gia_ban DECIMAL(12,2) NOT NULL DEFAULT 0.00,
     so_luong INT UNSIGNED NOT NULL DEFAULT 0,
-    _id INT UNSIGNED NOT NULL,
+    loai_sach_id INT UNSIGNED NOT NULL,
 
     INDEX idx_dau_sach_loai (loai_sach_id),
 

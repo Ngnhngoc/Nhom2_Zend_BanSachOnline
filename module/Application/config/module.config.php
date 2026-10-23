@@ -19,12 +19,12 @@ return [
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
-                        'controller' => Controller\IndexController::class,
+                        'controller' => Controller\CategoryController::class,
                         'action'     => 'index',
                     ],
                 ],
             ],
-            // Khai báo đường dẫn Quản lý loại sách để hiển thị view/application/category/index.phtml
+            // Khai báo đường dẫn Quản lý loại sách
             'category' => [
                 'type'    => Segment::class,
                 'options' => [

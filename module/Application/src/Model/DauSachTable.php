@@ -17,12 +17,71 @@ class DauSachTable
         $this->tableGateway = $tableGateway;
     }
 
-    /**
-     * Lấy danh sách tất cả đầu sách.
-     */
     public function getAll(): array
     {
         return $this->tableGateway->select()->toArray();
+    }
+
+    /**
+     * Lấy tất cả đầu sách kèm thông tin tên loại sách (JOIN loaisach).
+     */
+    public function getAllWithCategory(): array
+    {
+        return $this->search();
+    }
+
+    /**
+     * Tìm kiếm đầu sách theo từ khóa (tên sách, tác giả, NXB, tên loại) và danh mục loại sách.
+     */
+    public function search(?string $keyword = null, ?int $loaiSachId = null): array
+    {
+        $keyword = trim((string) $keyword);
+
+        $sql = $this->tableGateway->getSql();
+        $select = $sql->select();
+        $select->join(
+            ['ls' => 'loaisach'],
+            'dausach.loai_sach_id = ls.id',
+            ['ten_loai'],
+            $select::JOIN_LEFT
+        );
+
+        $predicate = $select->where;
+
+        if ($keyword !== '') {
+            $cleanId = preg_replace('/^[SsDd]0*/', '', $keyword);
+            if (is_numeric($cleanId) && (int) $cleanId > 0) {
+                $predicate->nest()
+                    ->equalTo('dausach.id', (int) $cleanId)
+                    ->or
+                    ->like('dausach.ten_sach', '%' . $keyword . '%')
+                    ->or
+                    ->like('dausach.tac_gia', '%' . $keyword . '%')
+                    ->or
+                    ->like('dausach.nha_xuat_ban', '%' . $keyword . '%')
+                    ->or
+                    ->like('ls.ten_loai', '%' . $keyword . '%')
+                ->unnest();
+            } else {
+                $predicate->nest()
+                    ->like('dausach.ten_sach', '%' . $keyword . '%')
+                    ->or
+                    ->like('dausach.tac_gia', '%' . $keyword . '%')
+                    ->or
+                    ->like('dausach.nha_xuat_ban', '%' . $keyword . '%')
+                    ->or
+                    ->like('ls.ten_loai', '%' . $keyword . '%')
+                ->unnest();
+            }
+        }
+
+        if ($loaiSachId !== null && $loaiSachId > 0) {
+            $predicate->equalTo('dausach.loai_sach_id', $loaiSachId);
+        }
+
+        $select->order('dausach.id ASC');
+
+        return $this->tableGateway->selectWith($select)->toArray();
     }
 
     /**

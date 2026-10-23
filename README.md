@@ -1,232 +1,173 @@
-# laminas-mvc-skeleton
+# 📚 Website Quản Lý & Bán Sách Online - Nhóm 2
 
-> ## 🇷🇺 Русским гражданам
->
-> Мы, участники Laminas, родились и живем в разных странах. У многих из нас есть друзья, родственники и коллеги как в России, так и в Украине. Некоторые из нас родились в России. Некоторые из нас живут в России. У некоторых бабушки и дедушки сражались с фашистами во Второй мировой войне. Здесь никто не поддерживает фашизм.
->
-> У одного из нас есть украинская родственница, которая спаслась из дома вместе с сыном. Поезд задержался из-за бомбежки на дороге впереди. У нас есть друзья, которые прячутся в бомбоубежищах. Мы с тревогой ждем весточки от них после воздушных налетов, которые беспорядочно наносят удары и попадают по больницам, школам, детским садам и домам. Мы не берем это из каких-либо СМИ. Мы наблюдаем это напрямую.
->
-> Вы доверяете нам достаточно, чтоб использовать наши программы, и мы просим вас довериться нам вновь. Мы нуждаемся в помощи. Выходите и протестуйте против этой бесполезной войны. Остановите кровопролитие. Скажите "Нет войне!"
->
-> ## 🇺🇸 To Citizens of Russia
->
-> We at Laminas come from all over the world. Many of us have friends, family and colleagues in both Russia and Ukraine. Some of us were born in Russia. Some of us currently live in Russia. Some have grandparents who fought Nazis in World War II. Nobody here supports fascism.
->
-> One team member has a Ukrainian relative who fled her home with her son. The train was delayed due to bombing on the road ahead. We have friends who are hiding in bomb shelters. We anxiously follow up on them after the air raids, which indiscriminately fire at hospitals, schools, kindergartens and houses. We're not taking this from any media. These are our actual experiences.
->
-> You trust us enough to use our software. We ask that you trust us to say the truth on this. We need your help. Go out and protest this unnecessary war. Stop the bloodshed. Say "stop the war!"
+Dự án được xây dựng trên nền tảng **PHP** theo mô hình kiến trúc MVC của **Laminas Framework (tiền thân là Zend Framework)**.
 
-## Introduction
+---
 
-This is a skeleton application using the Laminas MVC layer and module
-systems. This application is meant to be used as a starting place for those
-looking to get their feet wet with Laminas MVC.
+## 👥 Danh Sách Thành Viên & Phân Công Nhiệm Vụ
 
-## Installation using Composer
+| STT | Họ và Tên | Vai Trò / Nhiệm Vụ Chính | GitHub Account |
+|:---:|:---|:---|:---|
+| 1 | **Nguyễn Như Ngọc** | Trưởng nhóm / Quản lý Repository & Luồng chính | [@Ngnhngoc](https://github.com/Ngnhngoc) |
+| 2 | **Chung Mỹ Linh** | Cơ sở dữ liệu, Model & Kết nối CSDL Laminas | [@chungmylinh55](https://github.com/chungmylinh55) |
+| 3 | **Nguyễn Thị Như Quỳnh** | Thiết kế giao diện & Views người dùng | [@nguyenquynh](https://github.com/nguyenquynh) |
+| 4 | **Phạm Thị Hồng Phương** | Xử lý chức năng & Controllers | [@hphuong010905](https://github.com/hphuong010905) |
 
-The easiest way to create a new Laminas MVC project is to use
-[Composer](https://getcomposer.org/). If you don't have it already installed,
-then please install as per the [documentation](https://getcomposer.org/doc/00-intro.md).
+### 📋 Chi tiết phân công công việc các module:
+- **Phần 1:** Xây dựng Controller, Routing, hiển thị Danh sách Loại Sách và tính năng Tìm kiếm *(Phần đã hoàn thiện trong nhánh này)*.
+- **Phần 2:** Xây dựng chức năng Thêm, Sửa Loại sách và Kiểm tra dữ liệu (Validation).
+- **Phần 3:** Xây dựng chức năng Xóa, Hộp thoại xác nhận xóa và Xử lý lỗi ngoại lệ.
+- **Phần 4:** Xây dựng Đăng nhập, Đăng xuất, Session và Phân quyền người dùng.
+- **Phần 5:** Tích hợp tổng thể, kiểm thử toàn bộ hệ thống (CRUD & Auth).
 
-To create your new Laminas MVC project:
+---
 
-```bash
-$ composer create-project -sdev laminas/laminas-mvc-skeleton path/to/install
+## 🛠️ Công Nghệ & Môi Trường Phát Triển
+
+- **Ngôn ngữ:** PHP >= 8.1 (yêu cầu các extension: `pdo_mysql`, `mbstring`, `intl`)
+- **Framework MVC:** [Laminas MVC](https://getlaminas.org/) v3.7+ (Zend Framework)
+  - `laminas/laminas-db`: Thao tác cơ sở dữ liệu qua TableGateway Pattern
+  - `laminas/laminas-router`: Định tuyến URL
+  - `laminas/laminas-view`: Template engine và View Helpers
+  - `laminas/laminas-mvc-plugin-flashmessenger`: Quản lý thông báo phiên
+- **Cơ sở dữ liệu:** MySQL 8.0 / MariaDB (bảng mã: `utf8mb4_unicode_ci`)
+- **Web Server:** Apache (Laragon / XAMPP) hoặc PHP Built-in Server
+- **Quản lý thư viện:** Composer
+- **Giao diện:** Bootstrap 5, FontAwesome 6, CSS tùy biến
+
+---
+
+## 📁 Cấu Trúc Thư Mục Dự Án
+
+```text
+Nhom2_Zend_BanSachOnline/
+├── config/
+│   ├── autoload/
+│   │   ├── global.php             # Cấu hình kết nối cơ sở dữ liệu chung
+│   │   └── local.php              # Cấu hình cụ thể môi trường cục bộ (host, user, pass, db)
+│   ├── modules.config.php         # Danh sách các module kích hoạt trong Laminas
+│   └── application.config.php     # Cấu hình nạp ứng dụng
+├── data/
+│   └── ban_sach_online.sql        # Script tạo CSDL và nạp dữ liệu mẫu
+├── module/
+│   └── Application/               # Module chính của ứng dụng
+│       ├── config/
+│       │   └── module.config.php  # Cấu hình Routing, Controller và DI Factories
+│       ├── src/
+│       │   ├── Controller/
+│       │   │   ├── CategoryController.php # Controller xử lý Danh sách & Tìm kiếm
+│       │   │   └── IndexController.php    # Điều hướng về danh mục chính
+│       │   └── Model/
+│       │       ├── LoaiSachTable.php      # Model thao tác dữ liệu bảng loaisach
+│       │       ├── DauSachTable.php       # Model bảng dausach
+│       │       └── NguoiDungTable.php     # Model bảng nguoidung
+│       └── view/
+│           ├── application/
+│           │   ├── category/
+│           │   │   └── index.phtml        # Giao diện Danh sách & Tìm kiếm Loại Sách
+│           │   ├── index/
+│           │   │   └── index.phtml        # View trang chủ
+│           │   └── partial/
+│           │       └── flash-messages.phtml # Template thông báo hệ thống
+│           └── layout/
+│               └── layout.phtml           # Khung layout chung (Navbar, Sidebar)
+├── public/
+│   ├── index.php                  # Điểm khởi chạy ứng dụng (Entry point)
+│   ├── .htaccess                  # Cấu hình URL Rewrite của Apache
+│   └── css/, js/                  # Tài nguyên tĩnh
+├── .htaccess                      # Chuyển hướng request thư mục gốc vào public/
+└── composer.json                  # Khai báo thư viện và scripts
 ```
 
-Once installed, you can test it out immediately using PHP's built-in web server:
+---
 
+## 🚀 Hướng Dẫn Cài Đặt & Khởi Chạy Dự Án
+
+### Bước 1: Tải mã nguồn về máy
+Mở Terminal hoặc Command Prompt:
 ```bash
-$ cd path/to/install
-$ php -S 0.0.0.0:8080 -t public
-# OR use the composer alias:
-$ composer serve
+git clone https://github.com/Ngnhngoc/Nhom2_Zend_BanSachOnline.git
+cd Nhom2_Zend_BanSachOnline
+git checkout linh
 ```
 
-This will start the cli-server on port 8080, and bind it to all network interfaces.
-You can then visit the site at http://localhost:8080/ which will bring up Laminas MVC Skeleton welcome page.
-
-**Note:** The built-in CLI server is *for development only*.
-
-## Development mode
-
-The skeleton ships with [laminas-development-mode](https://github.com/laminas/laminas-development-mode)
-by default, and provides three aliases for consuming the script it ships with:
-
+### Bước 2: Cài đặt thư viện dependencies
+Chạy lệnh sau tại thư mục gốc:
 ```bash
-$ composer development-enable  # enable development mode
-$ composer development-disable # disable development mode
-$ composer development-status  # whether or not development mode is enabled
+composer install
 ```
 
-You may provide development-only modules and bootstrap-level configuration in
-`config/development.config.php.dist`, and development-only application
-configuration in `config/autoload/development.local.php.dist`. Enabling
-development mode will copy these files to versions removing the `.dist` suffix,
-while disabling development mode will remove those copies.
+### Bước 3: Cấu hình và nạp Cơ Sở Dữ Liệu
+1. Mở phần mềm **Laragon** (hoặc XAMPP) và khởi động dịch vụ **MySQL**.
+2. Mở công cụ quản trị CSDL (HeidiSQL, phpMyAdmin, hoặc Terminal MySQL).
+3. Import file dữ liệu tại đường dẫn: `data/ban_sach_online.sql`.
+   *File sẽ tự động khởi tạo database `ban_sach_online` và chèn dữ liệu mẫu.*
+4. Kiểm tra cấu hình kết nối tại file `config/autoload/local.php`:
+   ```php
+   return [
+       'db' => [
+           'driver'   => 'Pdo_Mysql',
+           'hostname' => 'localhost',
+           'port'     => 3306,
+           'database' => 'ban_sach_online',
+           'username' => 'root',
+           'password' => '', // Điền mật khẩu nếu MySQL của bạn có thiết lập
+           'charset'  => 'utf8mb4',
+       ],
+   ];
+   ```
 
-Development mode is automatically enabled as part of the skeleton installation process.
-After making changes to one of the above-mentioned `.dist` configuration files you will
-either need to disable then enable development mode for the changes to take effect,
-or manually make matching updates to the `.dist`-less copies of those files.
+### Bước 4: Chạy Website
 
-## Running Unit Tests
+#### Cách 1: Sử dụng Laragon (Khuyên dùng)
+- Đặt thư mục dự án tại `C:\laragon\www\Nhom2_Zend_BanSachOnline`.
+- Bật **Apache** và **MySQL** trên giao diện Laragon.
+- Mở trình duyệt web và truy cập một trong hai địa chỉ:
+  - Qua Virtual Host: **[http://nhom2_zend_bansachonline.test:8080](http://nhom2_zend_bansachonline.test:8080)**
+  - Qua đường dẫn trực tiếp: **[http://localhost:8080/Nhom2_Zend_BanSachOnline/public/](http://localhost:8080/Nhom2_Zend_BanSachOnline/public/)**
 
-To run the supplied skeleton unit tests, you need to do one of the following:
+#### Cách 2: Sử dụng PHP Built-in Server
+Chạy lệnh sau tại thư mục dự án:
+```bash
+php -S localhost:8080 -t public
+```
+Sau đó truy cập: **[http://localhost:8080](http://localhost:8080)**
 
-- During initial project creation, select to install the MVC testing support.
-- After initial project creation, install [laminas-test](https://docs.laminas.dev/laminas-test/):
+---
 
+## 📌 Các Chức Năng Đã Xây Dựng
+
+Phạm vi hoàn thiện bao gồm **Controller, Routing, Hiển thị Danh sách và Tìm kiếm Loại Sách**:
+
+| Đường Dẫn (Route) | Controller | Action | Chức Năng Thực Hiện |
+|:---|:---|:---|:---|
+| `/` | `CategoryController` | `index` | Trang chủ hệ thống - Tự động tải Danh sách Loại Sách |
+| `/category` | `CategoryController` | `index` | Quản lý danh mục loại sách: Hiển thị bảng danh sách động từ MySQL |
+| `/category?keyword=...` | `CategoryController` | `index` | Tìm kiếm loại sách theo tên loại, mã loại (VD: `L01`), hoặc mô tả |
+| `/category?trang_thai=...` | `CategoryController` | `index` | Lọc loại sách theo trạng thái: Đang hoạt động (`1`) hoặc Tạm ẩn/Khóa (`0`) |
+
+### ✨ Điểm nổi bật của tính năng:
+- **Truy vấn CSDL động:** Dữ liệu được nạp trực tiếp từ bảng `loaisach` thông qua `LoaiSachTable` (mô hình TableGateway).
+- **Bộ lọc tìm kiếm linh hoạt:**
+  - Hỗ trợ tìm kiếm theo tên loại sách (ví dụ: *Công nghệ*, *Văn học*...).
+  - Hỗ trợ tìm kiếm theo mã định danh (nhập `L01`, `L1`, hoặc số `1`).
+  - Lọc nhanh trạng thái hoạt động hoặc tạm ẩn.
+  - Nút **Làm mới (Reset bộ lọc)** giúp người dùng quay lại danh sách ban đầu nhanh chóng.
+- **Giao diện chuẩn hóa:** Bố cục hiện đại với Bootstrap 5, Badge phân loại trạng thái, Sidebar danh mục được tối ưu hiển thị.
+
+---
+
+## 💡 Các Lệnh Tiện Ích Với Composer
+
+- **Xóa bộ nhớ đệm cấu hình (Config Cache):**
   ```bash
-  $ composer require --dev laminas/laminas-test
+  composer clear-config-cache
   ```
-
-Once testing support is present, you can run the tests using:
-
-```bash
-$ ./vendor/bin/phpunit
-```
-
-If you need to make local modifications for the PHPUnit test setup, copy
-`phpunit.xml.dist` to `phpunit.xml` and edit the new file; the latter has
-precedence over the former when running tests, and is ignored by version
-control. (If you want to make the modifications permanent, edit the
-`phpunit.xml.dist` file.)
-
-## Running Psalm Static Analysis
-
-To run the supplied skeleton static analysis, you need to do one of the following:
-It is recommended to install the test components from laminas (laminas/laminas-test),
-as this is used in the tests supplied.
-
+- **Bật chế độ phát triển (Development Mode):**
   ```bash
-  $ composer require --dev vimeo/psalm psalm/plugin-phpunit laminas/laminas-test
+  composer development-enable
   ```
-
-Once psalm support is present, you can run the static analysis using:
-
-```bash
-$ composer static-analysis
-```
-
-## Using docker-compose
-
-This skeleton provides a `docker-compose.yml` for use with [docker-compose](https://docs.docker.com/compose/);
-it uses the provided `Dockerfile` to build a docker image for the `laminas` container created with `docker-compose`.
-
-Build and start the image and container using:
-
-```bash
-$ docker-compose up -d --build
-```
-
-At this point, you can visit http://localhost:8080 to see the site running.
-
-You can also run commands such as `composer` in the container.
-The container environment is named "laminas" so you will pass that value to `docker-compose run`:
-
-```bash
-$ docker-compose run laminas composer install
-```
-
-Some composer packages optionally use additional PHP extensions.
-The Dockerfile contains several commented-out commands which enable some of the more popular php extensions.
-For example, to install `pdo-pgsql` support for `laminas/laminas-db` uncomment the lines:
-
-```sh
-# RUN apt-get install --yes libpq-dev \
-#     && docker-php-ext-install pdo_pgsql
-```
-
-then re-run the `docker-compose up -d --build` line as above.
-
-> You may also want to combine the various `apt-get` and `docker-php-ext-*`
-> statements later to reduce the number of layers created by your image.
-
-## Web server setup
-
-### Apache setup
-
-To setup apache, setup a virtual host to point to the public/ directory of the project and you should be ready to go!
-It should look something like below:
-
-```apache
-<VirtualHost *:80>
-    ServerName laminasapp.localhost
-    DocumentRoot /path/to/laminasapp/public
-    <Directory /path/to/laminasapp/public>
-        DirectoryIndex index.php
-        AllowOverride All
-        Order allow,deny
-        Allow from all
-        <IfModule mod_authz_core.c>
-        Require all granted
-        </IfModule>
-    </Directory>
-</VirtualHost>
-```
-
-### Nginx setup
-
-To setup nginx, open your `/path/to/nginx/nginx.conf` and add an [include directive](http://nginx.org/en/docs/ngx_core_module.html#include) below into `http` block if it does not already exist:
-
-```nginx
-http {
-    # ...
-    include sites-enabled/*.conf;
-}
-```
-
-Create a virtual host configuration file for your project under `/path/to/nginx/sites-enabled/laminasapp.localhost.conf`.
-It should look something like below:
-
-```nginx
-server {
-    listen       80;
-    server_name  laminasapp.localhost;
-    root         /path/to/laminasapp/public;
-
-    location / {
-        index index.php;
-        try_files $uri $uri/ @php;
-    }
-
-    location @php {
-        # Pass the PHP requests to FastCGI server (php-fpm) on 127.0.0.1:9000
-        fastcgi_pass   127.0.0.1:9000;
-        fastcgi_param  SCRIPT_FILENAME /path/to/laminasapp/public/index.php;
-        include fastcgi_params;
-    }
-}
-```
-
-Restart the nginx, now you should be ready to go!
-
-## QA Tools
-
-The skeleton does not come with any QA tooling by default, but does ship with
-configuration for each of:
-
-- [phpcs](https://github.com/squizlabs/php_codesniffer)
-- [laminas-test](https://docs.laminas.dev/laminas-test/)
-- [phpunit](https://phpunit.de)
-
-Additionally, it comes with some basic tests for the shipped
-`Application\Controller\IndexController`.
-
-If you want to add these QA tools, execute the following:
-
-```bash
-$ composer require --dev squizlabs/php_codesniffer laminas/laminas-test
-```
-
-We provide aliases for each of these tools in the Composer configuration:
-
-```bash
-# Run CS checks:
-$ composer cs-check
-# Fix CS errors:
-$ composer cs-fix
-# Run PHPUnit tests:
-$ composer test
-```
+- **Tắt chế độ phát triển:**
+  ```bash
+  composer development-disable
+  ```

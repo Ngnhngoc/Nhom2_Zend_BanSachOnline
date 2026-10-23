@@ -1,75 +1,133 @@
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold text-dark">
-        <i class="fas fa-list me-2"></i> Quản Lý Loại Sách
-    </h2>
-    <a href="/category/add" class="btn btn-primary shadow-sm">
-        <i class="fas fa-plus-circle me-1"></i> Thêm Loại Sách Mới
-    </a>
-</div>
+<div class="container-fluid px-0">
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">
+                <i class="fas fa-layer-group text-primary me-2"></i> Quản Lý Loại Sách
+            </h2>
+            <p class="text-muted mb-0">Danh sách phân loại sách và tìm kiếm trong hệ thống</p>
+        </div>
+    </div>
 
-<div class="card border-0 shadow-sm rounded-4">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th width="10%">STT</th>
-                        <th width="25%">Mã Loại</th>
-                        <th width="40%">Tên Loại Sách</th>
-                        <th width="25%" class="text-center">Thao Tác</th>
-                    </tr>
-                </thead>
+    <!-- Khung Tìm Kiếm & Lọc -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-3 p-md-4">
+            <form method="GET" action="<?= $this->url('category') ?>" class="row g-3 align-items-center">
+                <div class="col-md-6 col-lg-7">
+                    <label class="form-label fw-semibold text-secondary small mb-1">
+                        <i class="fas fa-search me-1"></i> Từ khóa tìm kiếm
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input
+                            type="text"
+                            name="keyword"
+                            class="form-control border-start-0 bg-light"
+                            placeholder="Nhập tên loại sách hoặc mã loại (VD: L01, Công nghệ...)"
+                            value="<?= $this->escapeHtmlAttr($this->keyword ?? '') ?>"
+                        >
+                    </div>
+                </div>
 
-                <tbody>
-                    <?php if (empty($loaiSachs)): ?>
+                <div class="col-md-3 col-lg-3">
+                    <label class="form-label fw-semibold text-secondary small mb-1">
+                        <i class="fas fa-filter me-1"></i> Trạng thái
+                    </label>
+                    <select name="trang_thai" class="form-select bg-light">
+                        <option value="" <?= ($this->trangThai === '' || $this->trangThai === null) ? 'selected' : '' ?>>Tất cả trạng thái</option>
+                        <option value="1" <?= ($this->trangThai === '1') ? 'selected' : '' ?>>Đang hoạt động</option>
+                        <option value="0" <?= ($this->trangThai === '0') ? 'selected' : '' ?>>Đang ẩn / Khóa</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 col-lg-2 d-flex gap-2 align-self-end">
+                    <button type="submit" class="btn btn-primary w-100 fw-semibold">
+                        <i class="fas fa-search me-1"></i> Tìm
+                    </button>
+                    <?php if (!empty($this->keyword) || ($this->trangThai !== '' && $this->trangThai !== null)): ?>
+                        <a href="<?= $this->url('category') ?>" class="btn btn-outline-secondary" title="Xóa bộ lọc">
+                            <i class="fas fa-redo"></i>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bảng danh sách Loại Sách -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold text-dark">
+                Danh sách loại sách (<?= count($this->loaiSachs ?? []) ?>)
+            </h5>
+            <?php if (!empty($this->keyword)): ?>
+                <span class="badge bg-info text-dark">
+                    Kết quả tìm: "<?= $this->escapeHtml($this->keyword) ?>"
+                </span>
+            <?php endif; ?>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light border-top text-uppercase small text-muted">
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">
-                                Chưa có loại sách nào.
-                            </td>
+                            <th class="ps-4" width="8%">STT</th>
+                            <th width="15%">Mã Loại</th>
+                            <th width="35%">Tên Loại Sách</th>
+                            <th width="27%">Mô Tả</th>
+                            <th width="15%" class="text-center pe-4">Trạng Thái</th>
                         </tr>
-                    <?php else: ?>
-                        <?php foreach ($loaiSachs as $index => $loaiSach): ?>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($this->loaiSachs)): ?>
                             <tr>
-                                <td><?= $index + 1 ?></td>
-
-                                <td>
-                                    <?= 'L' . str_pad(
-                                        (string) $loaiSach['id'],
-                                        2,
-                                        '0',
-                                        STR_PAD_LEFT
-                                    ) ?>
-                                </td>
-
-                                <td class="fw-semibold">
-                                    <?= $this->escapeHtml(
-                                        $loaiSach['ten_loai']
-                                    ) ?>
-                                </td>
-
-                                <td class="text-center">
-                                    <a
-                                        href="/category/edit/<?= (int) $loaiSach['id'] ?>"
-                                        class="btn btn-warning btn-sm text-white me-1"
-                                        title="Sửa"
-                                    >
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
-
-                                    <a
-                                        href="/category/delete/<?= (int) $loaiSach['id'] ?>"
-                                        class="btn btn-danger btn-sm"
-                                        title="Xóa"
-                                        onclick="return confirm('Bạn có chắc chắn muốn xóa không?');"
-                                    >
-                                        <i class="fas fa-trash-alt"></i> Xóa
-                                    </a>
+                                <td colspan="5" class="text-center text-muted py-5">
+                                    <i class="fas fa-inbox fa-3x mb-3 text-secondary d-block"></i>
+                                    Không tìm thấy loại sách nào phù hợp.
+                                    <?php if (!empty($this->keyword) || ($this->trangThai !== '' && $this->trangThai !== null)): ?>
+                                        <br>
+                                        <a href="<?= $this->url('category') ?>" class="btn btn-sm btn-link text-decoration-none mt-2">
+                                            <i class="fas fa-redo me-1"></i> Xóa điều kiện lọc
+                                        </a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                        <?php else: ?>
+                            <?php foreach ($this->loaiSachs as $index => $loaiSach): ?>
+                                <tr>
+                                    <td class="ps-4 text-muted fw-semibold"><?= $index + 1 ?></td>
+                                    <td>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">
+                                            <?= 'L' . str_pad((string) $loaiSach['id'], 2, '0', STR_PAD_LEFT) ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-dark">
+                                            <?= $this->escapeHtml($loaiSach['ten_loai']) ?>
+                                        </span>
+                                    </td>
+                                    <td class="text-muted small">
+                                        <?= !empty($loaiSach['mo_ta']) ? $this->escapeHtml($loaiSach['mo_ta']) : '<em>(Chưa có mô tả)</em>' ?>
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <?php if ((int) $loaiSach['trang_thai'] === 1): ?>
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                                                <i class="fas fa-check-circle me-1"></i> Hoạt động
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">
+                                                <i class="fas fa-eye-slash me-1"></i> Tạm khóa
+                                            </span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

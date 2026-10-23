@@ -30,23 +30,22 @@
         <!-- Navbar phía trên -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold" href="/category"><i class="fas fa-book-reader me-2"></i>Admin BookStore</a>
-                <div class="d-flex align-items-center">
-                    <span class="text-light me-3"><i class="fas fa-user-circle me-1"></i> Xin chào </span>
-                    <a href="/auth/logout" class="btn btn-outline-light btn-sm"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
-                </div>
+                <a class="navbar-brand fw-bold" href="<?= $this->url('category') ?>"><i class="fas fa-book-reader me-2"></i>Admin BookStore</a>
             </div>
         </nav>
 
         <div class="container-fluid" style="margin-top: 56px;">
             <div class="row">
-                <!-- Sidebar bên trái (Đã thu gọn, chỉ giữ lại Quản lý Loại Sách) -->
-                <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm min-vh-100 p-0">
+                <!-- Sidebar bên trái -->
+                <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm min-vh-100 p-0 border-end">
                     <div class="position-sticky pt-3">
-                        <ul class="nav flex-column">
+                        <div class="px-3 pb-2 text-uppercase small fw-bold text-muted">
+                            Quản trị danh mục
+                        </div>
+                        <ul class="nav flex-column mb-auto">
                             <li class="nav-item">
-                                <a class="nav-link text-dark py-3 px-3 border-bottom bg-light fw-bold" href="/category">
-                                    <i class="fas fa-list me-2 text-success"></i> Quản lý Loại Sách
+                                <a class="nav-link py-3 px-3 border-bottom d-flex align-items-center bg-primary text-white fw-bold shadow-sm" href="<?= $this->url('category') ?>">
+                                    <i class="fas fa-layer-group me-2 fs-5"></i> Quản lý Loại Sách
                                 </a>
                             </li>
                         </ul>
