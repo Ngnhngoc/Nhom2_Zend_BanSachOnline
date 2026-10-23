@@ -1580,7 +1580,7 @@
             "require": {
                 "composer-plugin-api": "^2.2",
                 "laminas/laminas-component-installer": "^3.0",
-                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
             },
             "conflict": {
                 "zendframework/zend-skeleton-installer": "*"

@@ -7,6 +7,8 @@ namespace Application;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use Application\Model\LoaiSachTable;
+use Application\Model\NguoiDungTable;
 
 return [
     'router' => [
@@ -59,13 +61,59 @@ return [
             ],
         ],
     ],
-    'controllers' => [
+
+
+    'service_manager' => [
         'factories' => [
-            Controller\IndexController::class    => InvokableFactory::class,
-            Controller\CategoryController::class => InvokableFactory::class,
-            Controller\AuthController::class     => InvokableFactory::class,
+
+           Model\NguoiDungTable::class => function ($container) {
+    return new Model\NguoiDungTable(
+        $container->get('NguoiDungTableGateway')
+    );
+},
+
+'NguoiDungTableGateway' => function ($container) {
+    $dbAdapter = $container->get(
+        \Laminas\Db\Adapter\AdapterInterface::class
+    );
+
+    return new \Laminas\Db\TableGateway\TableGateway(
+        'nguoi_dung',
+        $dbAdapter
+    );
+},
+
+            Model\LoaiSachTable::class => function ($container) {
+                return new Model\LoaiSachTable(
+                    $container->get('LoaiSachTableGateway')
+                );
+            },
+            'LoaiSachTableGateway' => function ($container) {
+                $dbAdapter = $container->get(
+                    \Laminas\Db\Adapter\AdapterInterface::class
+                );
+
+                return new \Laminas\Db\TableGateway\TableGateway(
+                    'loai_sach',
+                    $dbAdapter
+                );
+            },
         ],
     ],
+
+    'controllers' => [
+    'factories' => [
+        Controller\IndexController::class => InvokableFactory::class,
+
+        Controller\CategoryController::class => function ($container) {
+            return new Controller\CategoryController(
+                $container->get(Model\LoaiSachTable::class)
+            );
+        },
+
+        Controller\AuthController::class => InvokableFactory::class,
+    ],
+],
     'view_manager' => [
         'display_not_found_reason' => true,
         'display_exceptions'       => true,
