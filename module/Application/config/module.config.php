@@ -9,6 +9,7 @@ use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Application\Model\LoaiSachTable;
 use Application\Model\NguoiDungTable;
+use Application\Model\DauSachTable;
 
 return [
     'router' => [
@@ -63,43 +64,64 @@ return [
     ],
 
 
-    'service_manager' => [
-        'factories' => [
+   
+'service_manager' => [
+    'factories' => [
+        Model\NguoiDungTable::class => function ($container) {
+            return new Model\NguoiDungTable(
+                $container->get('NguoiDungTableGateway')
+            );
+        },
 
-           Model\NguoiDungTable::class => function ($container) {
-    return new Model\NguoiDungTable(
-        $container->get('NguoiDungTableGateway')
-    );
-},
-
-'NguoiDungTableGateway' => function ($container) {
+        'NguoiDungTableGateway' => function ($container) {
     $dbAdapter = $container->get(
         \Laminas\Db\Adapter\AdapterInterface::class
     );
 
     return new \Laminas\Db\TableGateway\TableGateway(
-        'nguoi_dung',
+        'nguoidung',
         $dbAdapter
     );
 },
 
-            Model\LoaiSachTable::class => function ($container) {
-                return new Model\LoaiSachTable(
-                    $container->get('LoaiSachTableGateway')
-                );
-            },
-            'LoaiSachTableGateway' => function ($container) {
-                $dbAdapter = $container->get(
-                    \Laminas\Db\Adapter\AdapterInterface::class
-                );
+        
+Model\DauSachTable::class => function ($container) {
+    return new Model\DauSachTable(
+        $container->get('DauSachTableGateway')
+    );
+},
 
-                return new \Laminas\Db\TableGateway\TableGateway(
-                    'loai_sach',
-                    $dbAdapter
-                );
-            },
-        ],
+'DauSachTableGateway' => function ($container) {
+    $dbAdapter = $container->get(
+        \Laminas\Db\Adapter\AdapterInterface::class
+    );
+
+    return new \Laminas\Db\TableGateway\TableGateway(
+        'dausach',
+        $dbAdapter
+    );
+},
+
+
+        Model\LoaiSachTable::class => function ($container) {
+            return new Model\LoaiSachTable(
+                $container->get('LoaiSachTableGateway')
+            );
+        },
+
+        'LoaiSachTableGateway' => function ($container) {
+    $dbAdapter = $container->get(
+        \Laminas\Db\Adapter\AdapterInterface::class
+    );
+
+    return new \Laminas\Db\TableGateway\TableGateway(
+        'loaisach',
+        $dbAdapter
+    );
+},
     ],
+],
+
 
     'controllers' => [
     'factories' => [

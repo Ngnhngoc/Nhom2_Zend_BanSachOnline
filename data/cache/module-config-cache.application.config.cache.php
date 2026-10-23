@@ -60,14 +60,14 @@ return [
             },
             'NguoiDungTableGateway' => function ($container) {
                 $dbAdapter = $container->get(\Laminas\Db\Adapter\AdapterInterface::class);
-                return new \Laminas\Db\TableGateway\TableGateway('nguoi_dung', $dbAdapter);
+                return new \Laminas\Db\TableGateway\TableGateway('nguoidung', $dbAdapter);
             },
             'Application\\Model\\LoaiSachTable' => function ($container) {
                 return new \Application\Model\LoaiSachTable($container->get('LoaiSachTableGateway'));
             },
             'LoaiSachTableGateway' => function ($container) {
                 $dbAdapter = $container->get(\Laminas\Db\Adapter\AdapterInterface::class);
-                return new \Laminas\Db\TableGateway\TableGateway('loai_sach', $dbAdapter);
+               return new \Laminas\Db\TableGateway\TableGateway('loaisach', $dbAdapter);
             }
         ]
     ],
