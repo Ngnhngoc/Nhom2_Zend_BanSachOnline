@@ -133,7 +133,11 @@ Model\DauSachTable::class => function ($container) {
             );
         },
 
-        Controller\AuthController::class => InvokableFactory::class,
+        Controller\AuthController::class => function ($container) {
+            return new Controller\AuthController(
+                $container->get(Model\NguoiDungTable::class)
+            );
+        },
     ],
 ],
     'view_manager' => [
