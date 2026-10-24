@@ -73,6 +73,26 @@ class LoaiSachTable
     }
 
     /**
+     * Kiểm tra tên loại sách đã tồn tại hay chưa.
+     */
+    public function nameExists(string $name, ?int $exceptId = null): bool
+    {
+        $rowset = $this->tableGateway->select(function ($select) use ($name, $exceptId) {
+            $select->where->equalTo('ten_loai', $name);
+
+            if ($exceptId !== null) {
+                $select->where->notEqualTo('id', $exceptId);
+            }
+
+            $select->limit(1);
+        });
+
+        $row = $rowset->current();
+
+        return $row !== null && $row !== false;
+    }
+
+    /**
      * Thêm mới hoặc cập nhật loại sách.
      */
     public function save(array $data): void
@@ -91,28 +111,55 @@ class LoaiSachTable
             array_flip($allowedFields)
         );
 
-        if ($id === 0) {
-            if (empty($data['ten_loai'])) {
-                throw new RuntimeException(
-                    'Tên loại sách không được để trống.'
-                );
-            }
+        $normalizedName = preg_replace(
+            '/\s+/u',
+            ' ',
+            trim((string) ($data['ten_loai'] ?? ''))
+        );
+        $data['ten_loai'] = $normalizedName ?? '';
+        $data['mo_ta'] = trim((string) ($data['mo_ta'] ?? ''));
+        $data['trang_thai'] = (int) ($data['trang_thai'] ?? -1);
 
-            // ngay_tao và ngay_cap_nhat do MySQL tự tạo.
-            $this->tableGateway->insert($data);
-            return;
-        }
-
-        if ($this->getById($id) === null) {
+        if ($id !== 0 && $this->getById($id) === null) {
             throw new RuntimeException(
                 'Không tìm thấy loại sách có ID ' . $id
             );
         }
 
-        if (empty($data['ten_loai'])) {
+        if ($data['ten_loai'] === '') {
             throw new RuntimeException(
                 'Tên loại sách không được để trống.'
             );
+        }
+
+        if (mb_strlen($data['ten_loai']) > 150) {
+            throw new RuntimeException(
+                'Tên loại sách không được dài quá 150 ký tự.'
+            );
+        }
+
+        if (mb_strlen($data['mo_ta']) > 1000) {
+            throw new RuntimeException(
+                'Mô tả không được dài quá 1000 ký tự.'
+            );
+        }
+
+        if (! in_array($data['trang_thai'], [0, 1], true)) {
+            throw new RuntimeException(
+                'Trạng thái loại sách không hợp lệ.'
+            );
+        }
+
+        if ($this->nameExists($data['ten_loai'], $id === 0 ? null : $id)) {
+            throw new RuntimeException(
+                'Tên loại sách đã tồn tại.'
+            );
+        }
+
+        if ($id === 0) {
+            // ngay_tao và ngay_cap_nhat do MySQL tự tạo.
+            $this->tableGateway->insert($data);
+            return;
         }
 
         // MySQL tự cập nhật ngay_cap_nhat.
