@@ -59,7 +59,8 @@ class CategoryController extends AbstractActionController
         $formData = $this->emptyFormData();
         $errors   = [];
 
-        if ($this->getRequest()->isPost()) {
+        $request  = $this->getRequest();
+        if ($request instanceof Request && $request->isPost()) {
             $formData = $this->readFormData();
             $errors   = $this->validateForm($formData);
 
@@ -113,7 +114,8 @@ class CategoryController extends AbstractActionController
         ];
         $errors = [];
 
-        if ($this->getRequest()->isPost()) {
+        $request = $this->getRequest();
+        if ($request instanceof Request && $request->isPost()) {
             $formData = $this->readFormData();
             $errors   = $this->validateForm($formData, $id);
 
