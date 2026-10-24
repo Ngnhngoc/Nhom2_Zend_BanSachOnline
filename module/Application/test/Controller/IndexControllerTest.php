@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ApplicationTest\Controller;
 
-use Application\Controller\IndexController;
+use Application\Controller\AuthController;
 use Laminas\Stdlib\ArrayUtils;
 use Laminas\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
@@ -31,15 +31,15 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
         $this->dispatch('/', 'GET');
         $this->assertResponseStatusCode(200);
         $this->assertModuleName('application');
-        $this->assertControllerName(IndexController::class); // as specified in router's controller name alias
-        $this->assertControllerClass('IndexController');
+        $this->assertControllerName(AuthController::class);
+        $this->assertControllerClass('AuthController');
         $this->assertMatchedRouteName('home');
     }
 
     public function testIndexActionViewModelTemplateRenderedWithinLayout(): void
     {
         $this->dispatch('/', 'GET');
-        $this->assertQuery('body h1');
+        $this->assertQuery('body form');
     }
 
     public function testInvalidRouteDoesNotCrash(): void

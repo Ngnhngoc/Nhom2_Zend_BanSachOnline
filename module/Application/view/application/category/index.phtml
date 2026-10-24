@@ -1,3 +1,5 @@
+<?= $this->partial('application/partial/flash-messages') ?>
+
 <div class="container-fluid px-0">
     <!-- Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
@@ -7,6 +9,9 @@
             </h2>
             <p class="text-muted mb-0">Danh sách phân loại sách và tìm kiếm trong hệ thống</p>
         </div>
+        <a href="<?= $this->url('category', ['action' => 'add']) ?>" class="btn btn-primary shadow-sm">
+            <i class="fas fa-plus-circle me-1"></i> Thêm Loại Sách
+        </a>
     </div>
 
     <!-- Khung Tìm Kiếm & Lọc -->
@@ -46,7 +51,7 @@
                     <button type="submit" class="btn btn-primary w-100 fw-semibold">
                         <i class="fas fa-search me-1"></i> Tìm
                     </button>
-                    <?php if (!empty($this->keyword) || ($this->trangThai !== '' && $this->trangThai !== null)): ?>
+                    <?php if (! empty($this->keyword) || ($this->trangThai !== '' && $this->trangThai !== null)) : ?>
                         <a href="<?= $this->url('category') ?>" class="btn btn-outline-secondary" title="Xóa bộ lọc">
                             <i class="fas fa-redo"></i>
                         </a>
@@ -62,7 +67,7 @@
             <h5 class="mb-0 fw-bold text-dark">
                 Danh sách loại sách (<?= count($this->loaiSachs ?? []) ?>)
             </h5>
-            <?php if (!empty($this->keyword)): ?>
+            <?php if (! empty($this->keyword)) : ?>
                 <span class="badge bg-info text-dark">
                     Kết quả tìm: "<?= $this->escapeHtml($this->keyword) ?>"
                 </span>
@@ -75,18 +80,19 @@
                         <tr>
                             <th class="ps-4" width="8%">STT</th>
                             <th width="15%">Mã Loại</th>
-                            <th width="35%">Tên Loại Sách</th>
-                            <th width="27%">Mô Tả</th>
-                            <th width="15%" class="text-center pe-4">Trạng Thái</th>
+                            <th width="27%">Tên Loại Sách</th>
+                            <th width="25%">Mô Tả</th>
+                            <th width="15%" class="text-center">Trạng Thái</th>
+                            <th width="10%" class="text-center pe-4">Thao Tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($this->loaiSachs)): ?>
+                        <?php if (empty($this->loaiSachs)) : ?>
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-5">
+                                <td colspan="6" class="text-center text-muted py-5">
                                     <i class="fas fa-inbox fa-3x mb-3 text-secondary d-block"></i>
                                     Không tìm thấy loại sách nào phù hợp.
-                                    <?php if (!empty($this->keyword) || ($this->trangThai !== '' && $this->trangThai !== null)): ?>
+                                    <?php if (! empty($this->keyword) || ($this->trangThai !== '' && $this->trangThai !== null)) : ?>
                                         <br>
                                         <a href="<?= $this->url('category') ?>" class="btn btn-sm btn-link text-decoration-none mt-2">
                                             <i class="fas fa-redo me-1"></i> Xóa điều kiện lọc
@@ -94,8 +100,8 @@
                                     <?php endif; ?>
                                 </td>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($this->loaiSachs as $index => $loaiSach): ?>
+                        <?php else : ?>
+                            <?php foreach ($this->loaiSachs as $index => $loaiSach) : ?>
                                 <tr>
                                     <td class="ps-4 text-muted fw-semibold"><?= $index + 1 ?></td>
                                     <td>
@@ -109,18 +115,27 @@
                                         </span>
                                     </td>
                                     <td class="text-muted small">
-                                        <?= !empty($loaiSach['mo_ta']) ? $this->escapeHtml($loaiSach['mo_ta']) : '<em>(Chưa có mô tả)</em>' ?>
+                                        <?= ! empty($loaiSach['mo_ta']) ? $this->escapeHtml($loaiSach['mo_ta']) : '<em>(Chưa có mô tả)</em>' ?>
                                     </td>
-                                    <td class="text-center pe-4">
-                                        <?php if ((int) $loaiSach['trang_thai'] === 1): ?>
+                                    <td class="text-center">
+                                        <?php if ((int) $loaiSach['trang_thai'] === 1) : ?>
                                             <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
                                                 <i class="fas fa-check-circle me-1"></i> Hoạt động
                                             </span>
-                                        <?php else: ?>
+                                        <?php else : ?>
                                             <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">
                                                 <i class="fas fa-eye-slash me-1"></i> Tạm khóa
                                             </span>
                                         <?php endif; ?>
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <a
+                                            href="<?= $this->url('category', ['action' => 'edit', 'id' => $loaiSach['id']]) ?>"
+                                            class="btn btn-sm btn-warning text-white"
+                                            title="Sửa loại sách"
+                                        >
+                                            <i class="fas fa-edit me-1"></i> Sửa
+                                        </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
