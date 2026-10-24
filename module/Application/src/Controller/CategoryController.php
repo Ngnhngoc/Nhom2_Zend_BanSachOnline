@@ -28,9 +28,9 @@ class CategoryController extends AbstractActionController
             return $this->redirect()->toRoute('home');
         }
 
-        $keyword       = $this->params()->fromQuery('keyword', null);
+        $keyword        = $this->params()->fromQuery('keyword', null);
         $trangThaiParam = $this->params()->fromQuery('trang_thai', '');
-        $trangThai     = ($trangThaiParam !== '' && $trangThaiParam !== null)
+        $trangThai      = ($trangThaiParam !== '' && $trangThaiParam !== null)
             ? (int) $trangThaiParam
             : null;
 
