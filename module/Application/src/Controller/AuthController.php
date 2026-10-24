@@ -57,7 +57,7 @@ class AuthController extends AbstractActionController
                 if ($user['role'] === 'Admin') {
                     return $this->redirect()->toRoute('category');
                 }
-                return $this->redirect()->toRoute('home');
+                return $this->redirect()->toRoute('category');
             }
 
             // Báo lỗi ra View nếu sai tài khoản/mật khẩu
