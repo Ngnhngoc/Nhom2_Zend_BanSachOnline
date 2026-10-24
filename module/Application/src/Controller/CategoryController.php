@@ -163,14 +163,6 @@ class CategoryController extends AbstractActionController
             $redirectQuery['trang_thai'] = (string) $trangThai;
         }
 
-        // 2. Chốt phân quyền: Chỉ tài khoản Admin mới được phép xóa
-        $session = new Container('user_session');
-        if (! isset($session->user) || $session->user['role'] !== 'Admin') {
-            $this->flashMessenger()->addErrorMessage('Bạn không có quyền thực hiện chức năng Xóa loại sách!');
-
-            return $this->redirect()->toRoute('category', [], ['query' => $redirectQuery]);
-        }
-
         // 3. Kiểm tra mã loại sách (ID)
         $id = (int) $this->params()->fromRoute('id', 0);
         if ($id < 1) {
