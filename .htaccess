@@ -1,5 +1,9 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^$ public/ [L]
-    RewriteRule (.*) public/$1 [L]
+    
+    # Kiểm tra: Nếu đường dẫn chưa có chữ /public/ thì mới chuyển hướng
+    RewriteCond %{REQUEST_URI} !/public/
+    
+    # Ép chuyển hướng chuẩn xác về /public/ của đúng thư mục dự án
+    RewriteRule ^(.*)$ /nhom2_zend_bansachonline/public/$1 [R=301,L]
 </IfModule>

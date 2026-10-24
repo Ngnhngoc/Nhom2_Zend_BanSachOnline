@@ -15,12 +15,15 @@ return [
     'router' => [
         'routes' => [
             'home' => [
-                'type'    => Literal::class,
+                'type'    => \Laminas\Router\Http\Literal::class,
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
-                        'controller' => Controller\CategoryController::class,
-                        'action'     => 'index',
+                        // BẮT BUỘC SỬA DÒNG NÀY THÀNH AuthController
+                        'controller' => Controller\AuthController::class, 
+                        
+                        // Action trỏ về hàm loginAction
+                        'action'     => 'login', 
                     ],
                 ],
             ],
