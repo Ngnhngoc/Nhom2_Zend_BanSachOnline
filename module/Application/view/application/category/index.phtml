@@ -78,12 +78,12 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light border-top text-uppercase small text-muted">
                         <tr>
-                            <th class="ps-4" width="8%">STT</th>
-                            <th width="15%">Mã Loại</th>
-                            <th width="27%">Tên Loại Sách</th>
+                            <th class="ps-4" width="6%">STT</th>
+                            <th width="12%">Mã Loại</th>
+                            <th width="25%">Tên Loại Sách</th>
                             <th width="25%">Mô Tả</th>
-                            <th width="15%" class="text-center">Trạng Thái</th>
-                            <th width="10%" class="text-center pe-4">Thao Tác</th>
+                            <th width="14%" class="text-center">Trạng Thái</th>
+                            <th width="18%" class="text-center pe-4">Thao Tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -129,13 +129,27 @@
                                         <?php endif; ?>
                                     </td>
                                     <td class="text-center pe-4">
-                                        <a
-                                            href="<?= $this->url('category', ['action' => 'edit', 'id' => $loaiSach['id']]) ?>"
-                                            class="btn btn-sm btn-warning text-white"
-                                            title="Sửa loại sách"
-                                        >
-                                            <i class="fas fa-edit me-1"></i> Sửa
-                                        </a>
+                                        <div class="d-inline-flex gap-1">
+                                            <a
+                                                href="<?= $this->url('category', ['action' => 'edit', 'id' => $loaiSach['id']]) ?>"
+                                                class="btn btn-sm btn-warning text-white"
+                                                title="Sửa loại sách"
+                                            >
+                                                <i class="fas fa-edit me-1"></i> Sửa
+                                            </a>
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-outline-danger btn-delete-category"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteCategoryModal"
+                                                data-id="<?= (int) $loaiSach['id'] ?>"
+                                                data-code="<?= 'L' . str_pad((string) $loaiSach['id'], 2, '0', STR_PAD_LEFT) ?>"
+                                                data-name="<?= $this->escapeHtmlAttr($loaiSach['ten_loai']) ?>"
+                                                title="Xóa loại sách"
+                                            >
+                                                <i class="fas fa-trash-alt me-1"></i> Xóa
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -146,3 +160,79 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Xác Nhận Xóa Loại Sách (Thành viên Duy phụ trách) -->
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-danger text-white py-3">
+                <h5 class="modal-title fw-bold" id="deleteCategoryModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Xác nhận xóa loại sách
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <form id="deleteCategoryForm" method="POST" action="">
+                <div class="modal-body p-4 text-center">
+                    <div class="text-danger mb-3">
+                        <i class="fas fa-trash-alt fa-3x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">Bạn có chắc chắn muốn xóa loại sách này?</h5>
+                    <div class="alert alert-light border my-3 py-2 text-start">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small">Mã loại:</span>
+                            <span class="fw-bold text-primary" id="modalCategoryCode">---</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted small">Tên loại sách:</span>
+                            <span class="fw-bold text-dark" id="modalCategoryName">---</span>
+                        </div>
+                    </div>
+                    <p class="text-muted small mb-0">
+                        <i class="fas fa-info-circle text-warning me-1"></i>
+                        <strong>Lưu ý:</strong> Thao tác này không thể hoàn tác. Nếu loại sách này đang có sách thì sẽ không xóa được.
+                    </p>
+
+                    <!-- Các tham số ẩn để bảo toàn bộ lọc tìm kiếm và trạng thái -->
+                    <input type="hidden" name="keyword" value="<?= $this->escapeHtmlAttr($this->keyword ?? '') ?>">
+                    <input type="hidden" name="trang_thai" value="<?= $this->escapeHtmlAttr($this->trangThai ?? '') ?>">
+                </div>
+                <div class="modal-footer bg-light py-3 px-4 justify-content-end gap-2 border-0">
+                    <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Hủy
+                    </button>
+                    <button type="submit" class="btn btn-danger px-4 fw-semibold shadow-sm">
+                        <i class="fas fa-trash-alt me-1"></i> Xóa
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteModal = document.getElementById('deleteCategoryModal');
+    if (!deleteModal) return;
+
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        if (!button) return;
+
+        const id = button.getAttribute('data-id');
+        const code = button.getAttribute('data-code');
+        const name = button.getAttribute('data-name');
+
+        const modalCode = document.getElementById('modalCategoryCode');
+        const modalName = document.getElementById('modalCategoryName');
+        const deleteForm = document.getElementById('deleteCategoryForm');
+
+        if (modalCode) modalCode.textContent = code || ('L' + id);
+        if (modalName) modalName.textContent = name || '';
+
+        // Cập nhật URL action động tới route /category/delete/:id
+        if (deleteForm && id) {
+            deleteForm.action = '<?= $this->url('category') ?>/delete/' + encodeURIComponent(id);
+        }
+    });
+});
+</script>

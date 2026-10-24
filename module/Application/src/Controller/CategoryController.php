@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Application\Controller;
 
 use Application\Model\LoaiSachTable;
+use Laminas\Http\Request;
 use Laminas\Http\Response;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Session\Container;
@@ -58,7 +59,8 @@ class CategoryController extends AbstractActionController
         $formData = $this->emptyFormData();
         $errors   = [];
 
-        if ($this->getRequest()->isPost()) {
+        $request  = $this->getRequest();
+        if ($request instanceof Request && $request->isPost()) {
             $formData = $this->readFormData();
             $errors   = $this->validateForm($formData);
 
@@ -112,7 +114,8 @@ class CategoryController extends AbstractActionController
         ];
         $errors = [];
 
-        if ($this->getRequest()->isPost()) {
+        $request = $this->getRequest();
+        if ($request instanceof Request && $request->isPost()) {
             $formData = $this->readFormData();
             $errors   = $this->validateForm($formData, $id);
 
@@ -137,17 +140,76 @@ class CategoryController extends AbstractActionController
         ]);
     }
 
-    public function deleteAction()
+    /**
+     * Xóa loại sách và xử lý lỗi ràng buộc toàn vẹn dữ liệu.
+     * Do thành viên Duy phụ trách.
+     */
+    public function deleteAction(): Response
     {
-        // Phần xóa do Duy phụ trách; giữ nguyên chốt phân quyền hiện có.
-        $session = new Container('user_session');
-        if (! isset($session->user) || $session->user['role'] !== 'Admin') {
-            $this->flashMessenger()->addErrorMessage('Bạn không có quyền Xóa loại sách!');
-
-            return $this->redirect()->toRoute('category');
+        // 1. Kiểm tra đăng nhập
+        if (! $this->isAuthenticated()) {
+            return $this->redirect()->toRoute('home');
         }
 
-        return $this->redirect()->toRoute('category');
+        // Nhận các tham số tìm kiếm/lọc hiện tại để bảo toàn bộ lọc khi chuyển hướng
+        $keyword = $this->params()->fromPost('keyword', $this->params()->fromQuery('keyword', null));
+        $trangThai = $this->params()->fromPost('trang_thai', $this->params()->fromQuery('trang_thai', ''));
+
+        $redirectQuery = [];
+        if ($keyword !== null && trim((string) $keyword) !== '') {
+            $redirectQuery['keyword'] = trim((string) $keyword);
+        }
+        if ($trangThai !== '' && $trangThai !== null) {
+            $redirectQuery['trang_thai'] = (string) $trangThai;
+        }
+
+        // 2. Chốt phân quyền: Chỉ tài khoản Admin mới được phép xóa
+        $session = new Container('user_session');
+        if (! isset($session->user) || $session->user['role'] !== 'Admin') {
+            $this->flashMessenger()->addErrorMessage('Bạn không có quyền thực hiện chức năng Xóa loại sách!');
+
+            return $this->redirect()->toRoute('category', [], ['query' => $redirectQuery]);
+        }
+
+        // 3. Kiểm tra mã loại sách (ID)
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if ($id < 1) {
+            $this->flashMessenger()->addErrorMessage('Mã loại sách không hợp lệ.');
+
+            return $this->redirect()->toRoute('category', [], ['query' => $redirectQuery]);
+        }
+
+        // 4. Kiểm tra loại sách có tồn tại trong CSDL hay không
+        $loaiSach = $this->loaiSachTable->getById($id);
+        if ($loaiSach === null) {
+            $this->flashMessenger()->addErrorMessage('Không tìm thấy loại sách cần xóa.');
+
+            return $this->redirect()->toRoute('category', [], ['query' => $redirectQuery]);
+        }
+
+        // 5. Kiểm tra phương thức yêu cầu (Chỉ cho phép xóa khi gửi POST xác nhận)
+        $request = $this->getRequest();
+        if (! ($request instanceof Request && $request->isPost())) {
+            $this->flashMessenger()->addErrorMessage('Thao tác xóa không hợp lệ. Vui lòng xác nhận qua hộp thoại xóa.');
+
+            return $this->redirect()->toRoute('category', [], ['query' => $redirectQuery]);
+        }
+
+        // 6. Thực hiện xóa và bắt ngoại lệ (Foreign Key Constraints, Hệ thống, v.v.)
+        try {
+            $this->loaiSachTable->delete($id);
+            $this->flashMessenger()->addSuccessMessage(
+                sprintf('Xóa thành công loại sách "%s" (Mã: L%02d).', $loaiSach['ten_loai'], $id)
+            );
+        } catch (RuntimeException $exception) {
+            // Lỗi ràng buộc khóa ngoại từ bảng DauSach hoặc lỗi nghiệp vụ do Model ném ra
+            $this->flashMessenger()->addErrorMessage($exception->getMessage());
+        } catch (Throwable) {
+            // Lỗi hệ thống bất khả kháng khác
+            $this->flashMessenger()->addErrorMessage('Không thể xóa loại sách do lỗi hệ thống. Vui lòng thử lại sau.');
+        }
+
+        return $this->redirect()->toRoute('category', [], ['query' => $redirectQuery]);
     }
 
     /** @return array{ten_loai: string, mo_ta: string, trang_thai: int} */
