@@ -66,10 +66,20 @@
                         <div class="px-3 pb-2 text-uppercase small fw-bold text-muted">
                             Quản trị danh mục
                         </div>
+                        <?php
+                        $currentUri = $_SERVER['REQUEST_URI'] ?? '';
+                        $isBookActive = str_contains($currentUri, '/book');
+                        $isCategoryActive = str_contains($currentUri, '/category') || (! $isBookActive);
+                        ?>
                         <ul class="nav flex-column mb-auto">
                             <li class="nav-item">
-                                <a class="nav-link py-3 px-3 border-bottom d-flex align-items-center bg-primary text-white fw-bold shadow-sm" href="<?= $this->url('category') ?>">
-                                    <i class="fas fa-layer-group me-2 fs-5"></i> Quản lý Loại Sách
+                                <a class="nav-link py-3 px-3 border-bottom d-flex align-items-center <?= $isCategoryActive ? 'bg-primary text-white fw-bold shadow-sm' : 'text-dark fw-semibold' ?>" href="<?= $this->url('category') ?>">
+                                    <i class="fas fa-layer-group me-2 fs-5 <?= $isCategoryActive ? 'text-white' : 'text-primary' ?>"></i> Quản lý loại sách
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link py-3 px-3 border-bottom d-flex align-items-center <?= $isBookActive ? 'bg-primary text-white fw-bold shadow-sm' : 'text-dark fw-semibold' ?>" href="<?= $this->url('book') ?>">
+                                    <i class="fas fa-book me-2 fs-5 <?= $isBookActive ? 'text-white' : 'text-primary' ?>"></i> Quản lý đầu sách
                                 </a>
                             </li>
                         </ul>

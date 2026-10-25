@@ -42,6 +42,21 @@ return [
                     ],
                 ],
             ],
+            // Khai báo đường dẫn Quản lý đầu sách
+            'book' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/book[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\BookController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
             // Khai báo đường dẫn Đăng nhập
             'auth' => [
                 'type'    => Segment::class,
@@ -132,6 +147,13 @@ Model\DauSachTable::class => function ($container) {
 
         Controller\CategoryController::class => function ($container) {
             return new Controller\CategoryController(
+                $container->get(Model\LoaiSachTable::class)
+            );
+        },
+
+        Controller\BookController::class => function ($container) {
+            return new Controller\BookController(
+                $container->get(Model\DauSachTable::class),
                 $container->get(Model\LoaiSachTable::class)
             );
         },
