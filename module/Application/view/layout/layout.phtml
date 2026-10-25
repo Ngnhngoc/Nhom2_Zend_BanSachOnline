@@ -2,12 +2,21 @@
 /**
  * @var Laminas\View\Renderer\PhpRenderer $this
  */
+$session = new \Laminas\Session\Container('user_session');
+$isLoggedIn = isset($session->user);
+$currentUser = $session->user ?? null;
+$isAdmin = $isLoggedIn && (($currentUser['role'] ?? '') === 'Admin');
+
+$currentUri = $_SERVER['REQUEST_URI'] ?? '';
+$isCategoryActive = str_contains($currentUri, '/category');
+$isBookActive = str_contains($currentUri, '/book');
+$isAdminArea = $isCategoryActive || $isBookActive;
 ?>
 <?= $this->doctype() ?>
 <html lang="vi">
     <head>
         <meta charset="utf-8">
-        <?= $this->headTitle('Quản trị - Hệ thống Bán Sách Online')->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headTitle($isAdminArea ? 'Quản trị - Hệ thống bán sách online' : 'Hiệu sách online - Mua sách trực tuyến')->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?= $this->headMeta()
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
@@ -27,71 +36,91 @@
     </head>
     <body class="bg-light">
 
-        <!-- Navbar phía trên -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold" href="<?= $this->url('category') ?>">
-                    <i class="fas fa-book-reader me-2"></i>Admin BookStore
+        <!-- Navbar thanh điều hướng -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
+            <div class="container-fluid px-3 px-md-4">
+                <a class="navbar-brand fw-bold d-flex align-items-center" href="<?= $this->url('home') ?>">
+                    <i class="fas fa-book-reader text-warning me-2 fs-4"></i>
+                    <span><?= $isAdminArea ? 'Quản trị hệ thống' : 'Hiệu sách online' ?></span>
                 </a>
-                
-                <!-- Gọi Session để lấy tên người dùng -->
-                <?php $session = new \Laminas\Session\Container('user_session'); ?>
-                
-                <!-- Phần bên phải của thanh Menu -->
-                <div class="d-flex align-items-center text-white">
-                    <?php if (isset($session->user)): ?>
-                        <!-- Hiển thị tên người dùng và vai trò -->
-                        <span class="me-3">
+
+                <div class="d-flex align-items-center ms-auto gap-2 text-white">
+                    <?php if ($isAdmin): ?>
+                        <?php if ($isAdminArea): ?>
+                            <a href="<?= $this->url('home') ?>" class="btn btn-outline-warning btn-sm me-2">
+                                <i class="fas fa-store me-1"></i> Xem cửa hàng
+                            </a>
+                        <?php else: ?>
+                            <a href="<?= $this->url('category') ?>" class="btn btn-warning btn-sm fw-semibold me-2">
+                                <i class="fas fa-tachometer-alt me-1"></i> Trang quản trị
+                            </a>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php if ($isLoggedIn): ?>
+                        <span class="d-none d-sm-inline small me-2">
                             <i class="fas fa-user-circle me-1"></i> Xin chào, 
-                            <strong><?= $this->escapeHtml($session->user['ho_ten']) ?></strong> 
-                            <span class="badge <?= ($session->user['role'] === 'Admin') ? 'bg-danger' : 'bg-info text-dark' ?> ms-1">
-                                <?= ($session->user['role'] === 'Admin') ? 'Quản trị viên' : 'Khách hàng' ?>
+                            <strong><?= $this->escapeHtml($currentUser['ho_ten'] ?? $currentUser['ten_dang_nhap'] ?? '') ?></strong>
+                            <span class="badge <?= $isAdmin ? 'bg-danger' : 'bg-info text-dark' ?> ms-1">
+                                <?= $isAdmin ? 'Quản trị viên' : 'Khách hàng' ?>
                             </span>
                         </span>
                         
-                        <!-- Nút Đăng xuất -->
                         <a href="<?= $this->url('auth', ['action' => 'logout']) ?>" class="btn btn-outline-light btn-sm">
                             <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
+                        </a>
+                    <?php else: ?>
+                        <a href="<?= $this->url('auth', ['action' => 'login']) ?>" class="btn btn-primary btn-sm fw-semibold">
+                            <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
                         </a>
                     <?php endif; ?>
                 </div>
             </div>
         </nav>
 
-        <div class="container-fluid" style="margin-top: 56px;">
-            <div class="row">
-                <!-- Sidebar bên trái -->
-                <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm min-vh-100 p-0 border-end">
-                    <div class="position-sticky pt-3">
-                        <div class="px-3 pb-2 text-uppercase small fw-bold text-muted">
-                            Quản trị danh mục
+        <?php if ($isAdminArea): ?>
+            <!-- Khu vực Quản trị dành cho Admin có sidebar -->
+            <div class="container-fluid" style="margin-top: 56px;">
+                <div class="row">
+                    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm min-vh-100 p-0 border-end">
+                        <div class="position-sticky pt-3">
+                            <div class="px-3 pb-2 text-uppercase small fw-bold text-muted">
+                                Quản trị danh mục
+                            </div>
+                            <ul class="nav flex-column mb-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link py-3 px-3 border-bottom d-flex align-items-center <?= $isCategoryActive ? 'bg-primary text-white fw-bold shadow-sm' : 'text-dark fw-semibold' ?>" href="<?= $this->url('category') ?>">
+                                        <i class="fas fa-layer-group me-2 fs-5 <?= $isCategoryActive ? 'text-white' : 'text-primary' ?>"></i> Quản lý loại sách
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link py-3 px-3 border-bottom d-flex align-items-center <?= $isBookActive ? 'bg-primary text-white fw-bold shadow-sm' : 'text-dark fw-semibold' ?>" href="<?= $this->url('book') ?>">
+                                        <i class="fas fa-book me-2 fs-5 <?= $isBookActive ? 'text-white' : 'text-primary' ?>"></i> Quản lý đầu sách
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
-                        <?php
-                        $currentUri = $_SERVER['REQUEST_URI'] ?? '';
-                        $isBookActive = str_contains($currentUri, '/book');
-                        $isCategoryActive = str_contains($currentUri, '/category') || (! $isBookActive);
-                        ?>
-                        <ul class="nav flex-column mb-auto">
-                            <li class="nav-item">
-                                <a class="nav-link py-3 px-3 border-bottom d-flex align-items-center <?= $isCategoryActive ? 'bg-primary text-white fw-bold shadow-sm' : 'text-dark fw-semibold' ?>" href="<?= $this->url('category') ?>">
-                                    <i class="fas fa-layer-group me-2 fs-5 <?= $isCategoryActive ? 'text-white' : 'text-primary' ?>"></i> Quản lý loại sách
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link py-3 px-3 border-bottom d-flex align-items-center <?= $isBookActive ? 'bg-primary text-white fw-bold shadow-sm' : 'text-dark fw-semibold' ?>" href="<?= $this->url('book') ?>">
-                                    <i class="fas fa-book me-2 fs-5 <?= $isBookActive ? 'text-white' : 'text-primary' ?>"></i> Quản lý đầu sách
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
+                    </nav>
 
-                <!-- Nội dung thay đổi (Content) bên phải -->
-                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-                    <?= $this->content ?>
-                </main>
+                    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                        <?= $this->content ?>
+                    </main>
+                </div>
             </div>
-        </div>
+        <?php else: ?>
+            <!-- Khu vực Cửa hàng dành cho Khách hàng toàn màn hình -->
+            <div class="container-xl" style="margin-top: 76px; min-height: 80vh;">
+                <?= $this->content ?>
+            </div>
+
+            <!-- Footer cửa hàng -->
+            <footer class="bg-white border-top py-4 mt-5 text-center text-muted small">
+                <div class="container">
+                    <p class="mb-1 fw-semibold text-dark">Hiệu sách online - Dự án ứng dụng Web mã nguồn mở</p>
+                    <p class="mb-0">Hỗ trợ tìm kiếm và tra cứu các đầu sách chất lượng cao.</p>
+                </div>
+            </footer>
+        <?php endif; ?>
 
         <!-- Bootstrap 5 JS Bundle -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

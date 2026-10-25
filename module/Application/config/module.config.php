@@ -19,11 +19,8 @@ return [
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
-                        // BẮT BUỘC SỬA DÒNG NÀY THÀNH AuthController
-                        'controller' => Controller\AuthController::class, 
-                        
-                        // Action trỏ về hàm loginAction
-                        'action'     => 'login', 
+                        'controller' => Controller\IndexController::class,
+                        'action'     => 'index',
                     ],
                 ],
             ],
@@ -143,7 +140,12 @@ Model\DauSachTable::class => function ($container) {
 
     'controllers' => [
     'factories' => [
-        Controller\IndexController::class => InvokableFactory::class,
+        Controller\IndexController::class => function ($container) {
+            return new Controller\IndexController(
+                $container->get(Model\DauSachTable::class),
+                $container->get(Model\LoaiSachTable::class)
+            );
+        },
 
         Controller\CategoryController::class => function ($container) {
             return new Controller\CategoryController(
