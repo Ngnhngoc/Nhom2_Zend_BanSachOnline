@@ -43,9 +43,10 @@
                         <!-- Hiển thị tên người dùng và vai trò -->
                         <span class="me-3">
                             <i class="fas fa-user-circle me-1"></i> Xin chào, 
-                            <!-- Đổi username thành ho_ten ở dòng dưới đây -->
                             <strong><?= $this->escapeHtml($session->user['ho_ten']) ?></strong> 
-                            <span class="badge bg-secondary ms-1"><?= $this->escapeHtml($session->user['role']) ?></span>
+                            <span class="badge <?= ($session->user['role'] === 'Admin') ? 'bg-danger' : 'bg-info text-dark' ?> ms-1">
+                                <?= ($session->user['role'] === 'Admin') ? 'Quản trị viên' : 'Khách hàng' ?>
+                            </span>
                         </span>
                         
                         <!-- Nút Đăng xuất -->
