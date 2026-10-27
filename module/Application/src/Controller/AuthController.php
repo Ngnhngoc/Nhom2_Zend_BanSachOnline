@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace Application\Controller;
 
-use Laminas\Mvc\Controller\AbstractActionController;
-use Laminas\View\Model\ViewModel;
-use Laminas\Session\Container;
 use Application\Model\NguoiDungTable;
+use Laminas\Http\Request;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\Session\Container;
+use Laminas\View\Model\ViewModel;
 
 class AuthController extends AbstractActionController
 {
@@ -33,11 +34,11 @@ class AuthController extends AbstractActionController
         }
 
         $request = $this->getRequest();
-        
+
         // Xử lý khi form được submit (phương thức POST)
-        if ($request->isPost()) {
-            $username = $request->getPost('username');
-            $password = $request->getPost('password');
+        if ($request instanceof Request && $request->isPost()) {
+            $username = (string) $this->params()->fromPost('username', '');
+            $password = (string) $this->params()->fromPost('password', '');
 
             // Gọi hàm từ NguoiDungTable để lấy thông tin tài khoản
             $user = $this->nguoiDungTable->getByUsername($username);
@@ -53,11 +54,12 @@ class AuthController extends AbstractActionController
                     'ho_ten'   => $user['ho_ten'],
                 ];
 
-                // Phân quyền: Chuyển hướng theo chức vụ
+                // Phân quyền: Chuyển hướng theo vai trò người dùng
                 if ($user['role'] === 'Admin') {
                     return $this->redirect()->toRoute('category');
                 }
-                return $this->redirect()->toRoute('category');
+
+                return $this->redirect()->toRoute('home');
             }
 
             // Báo lỗi ra View nếu sai tài khoản/mật khẩu

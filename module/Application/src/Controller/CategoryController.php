@@ -28,6 +28,12 @@ class CategoryController extends AbstractActionController
             return $this->redirect()->toRoute('home');
         }
 
+        if (! $this->isAdmin()) {
+            $this->flashMessenger()->addErrorMessage('Bạn không có quyền truy cập khu vực Quản trị!');
+
+            return $this->redirect()->toRoute('home');
+        }
+
         $keyword       = $this->params()->fromQuery('keyword', null);
         $trangThaiParam = $this->params()->fromQuery('trang_thai', '');
         $trangThai     = ($trangThaiParam !== '' && $trangThaiParam !== null)
@@ -53,6 +59,12 @@ class CategoryController extends AbstractActionController
     public function addAction(): ViewModel|Response
     {
         if (! $this->isAuthenticated()) {
+            return $this->redirect()->toRoute('home');
+        }
+
+        if (! $this->isAdmin()) {
+            $this->flashMessenger()->addErrorMessage('Bạn không có quyền Thêm loại sách!');
+
             return $this->redirect()->toRoute('home');
         }
 
@@ -90,6 +102,12 @@ class CategoryController extends AbstractActionController
     public function editAction(): ViewModel|Response
     {
         if (! $this->isAuthenticated()) {
+            return $this->redirect()->toRoute('home');
+        }
+
+        if (! $this->isAdmin()) {
+            $this->flashMessenger()->addErrorMessage('Bạn không có quyền Sửa loại sách!');
+
             return $this->redirect()->toRoute('home');
         }
 
@@ -146,8 +164,14 @@ class CategoryController extends AbstractActionController
      */
     public function deleteAction(): Response
     {
-        // 1. Kiểm tra đăng nhập
+        // 1. Kiểm tra đăng nhập và phân quyền Admin
         if (! $this->isAuthenticated()) {
+            return $this->redirect()->toRoute('home');
+        }
+
+        if (! $this->isAdmin()) {
+            $this->flashMessenger()->addErrorMessage('Bạn không có quyền Xóa loại sách!');
+
             return $this->redirect()->toRoute('home');
         }
 
@@ -264,5 +288,12 @@ class CategoryController extends AbstractActionController
         $session = new Container('user_session');
 
         return isset($session->user);
+    }
+
+    private function isAdmin(): bool
+    {
+        $session = new Container('user_session');
+
+        return isset($session->user) && ($session->user['role'] ?? '') === 'Admin';
     }
 }
