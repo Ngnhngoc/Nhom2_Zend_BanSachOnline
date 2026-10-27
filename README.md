@@ -13,6 +13,7 @@ Dự án được xây dựng trên nền tảng **PHP** theo mô hình kiến t
 | 3 | **Nguyễn Thị Như Quỳnh** | Thiết kế giao diện & Views người dùng | [@nguyenquynh](https://github.com/nguyenquynh) |
 | 4 | **Phạm Thị Hồng Phương** | Xử lý chức năng & Controllers | [@hphuong010905](https://github.com/hphuong010905) |
 | 5 | **Trần Nhật Duy** | Xây dựng chức năng Xóa, xác nhận xóa, xử lý lỗi & Kiểm thử CRUD | [@NHATDUY119](https://github.com/NHATDUY119) |
+| 6 | **Trần Kim Tài** | Xây dựng chức năng Xây dựng Đăng nhập, Đăng xuất, Session và Phân quyền người dùng. | [@TranKimTai](https://github.com/TranKimTai) |
 
 ### 📋 Chi tiết phân công công việc các module:
 - **Phần 1:** Xây dựng Controller, Routing, hiển thị Danh sách Loại Sách và tính năng Tìm kiếm *(Phần đã hoàn thiện trong nhánh này)*.
@@ -170,7 +171,7 @@ Phạm vi hoàn thiện bao gồm **Controller, Routing, Hiển thị Danh sách
 - **Delete (Xóa dữ liệu):**
   - Xóa thành công loại sách rỗng.
   - Bắt lỗi an toàn và thông báo thân thiện khi xóa loại sách có sách liên kết (không để lỗi 500).
-  - Phân quyền chặt chẽ: Chỉ tài khoản `Admin` được xóa, tài khoản `NhanVien` bị từ chối truy cập.
+
 
 ---
 
