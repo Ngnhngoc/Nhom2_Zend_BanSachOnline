@@ -56,7 +56,7 @@ CREATE TABLE NguoiDung (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL DEFAULT 'NhanVien',
+    role VARCHAR(50) NOT NULL DEFAULT 'KhachHang',
     ho_ten VARCHAR(150) NULL,
     email VARCHAR(150) NULL,
     so_dien_thoai VARCHAR(20) NULL,
@@ -93,6 +93,7 @@ VALUES
 
 -- =========================================
 -- 6. THEM DU LIEU MAU CHO NGUOI DUNG
+-- Mat khau mac dinh cho ca 2 tai khoan: 123456
 -- =========================================
 INSERT INTO NguoiDung (
     username,
@@ -104,10 +105,21 @@ INSERT INTO NguoiDung (
     dia_chi,
     trang_thai
 )
-VALUES (
+VALUES
+(
+    'admin',
+    '$2y$10$zEiOiGX.Tv0lIfD4V2xIRueNt4SdeEdlFxNY0/jc0rECQNEvhhMbC',
+    'Admin',
+    'Quản Trị Viên',
+    'admin@example.com',
+    '0909999999',
+    'Hồ Chí Minh',
+    1
+),
+(
     'testuser',
-    '$2y$10$92IXUNjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-    'NhanVien',
+    '$2y$10$zEiOiGX.Tv0lIfD4V2xIRueNt4SdeEdlFxNY0/jc0rECQNEvhhMbC',
+    'KhachHang',
     'Nguyễn Văn A',
     'testuser@example.com',
     '0901234567',

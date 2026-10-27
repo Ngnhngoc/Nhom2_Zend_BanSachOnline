@@ -19,11 +19,8 @@ return [
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
-                        // BẮT BUỘC SỬA DÒNG NÀY THÀNH AuthController
-                        'controller' => Controller\AuthController::class, 
-                        
-                        // Action trỏ về hàm loginAction
-                        'action'     => 'login', 
+                        'controller' => Controller\IndexController::class,
+                        'action'     => 'index',
                     ],
                 ],
             ],
@@ -38,6 +35,21 @@ return [
                     ],
                     'defaults' => [
                         'controller' => Controller\CategoryController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            // Khai báo đường dẫn Quản lý đầu sách
+            'book' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/book[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\BookController::class,
                         'action'     => 'index',
                     ],
                 ],
@@ -128,10 +140,22 @@ Model\DauSachTable::class => function ($container) {
 
     'controllers' => [
     'factories' => [
-        Controller\IndexController::class => InvokableFactory::class,
+        Controller\IndexController::class => function ($container) {
+            return new Controller\IndexController(
+                $container->get(Model\DauSachTable::class),
+                $container->get(Model\LoaiSachTable::class)
+            );
+        },
 
         Controller\CategoryController::class => function ($container) {
             return new Controller\CategoryController(
+                $container->get(Model\LoaiSachTable::class)
+            );
+        },
+
+        Controller\BookController::class => function ($container) {
+            return new Controller\BookController(
+                $container->get(Model\DauSachTable::class),
                 $container->get(Model\LoaiSachTable::class)
             );
         },
